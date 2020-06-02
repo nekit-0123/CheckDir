@@ -76,6 +76,10 @@ void CheckTempRath(const char* WinTemp, size_t size)
 
 		Sleep(20);
 	}
+
+	delete[] CheckFile;
+	CheckFile = nullptr;
+
 }
 
 int main()
@@ -85,17 +89,18 @@ int main()
 	char WinTempStr[MAX_PATH + 1];
 	GetTempPath(MAX_PATH + 1, WinTempStr); // Получение директории папки temp
 	size_t lsize = strlen(WinTempStr) + 1;
-	char *strPath = new char[lsize + sizeof("CheckDir.exe")];
-	ZeroMemory(strPath, lsize);
-	strcat_s(strPath, lsize, WinTempStr);
-	strcat_s(strPath, lsize + sizeof("CheckDir.exe"), "CheckDir.exe");
-
+	
 	char OurDir[MAX_PATH + 1];
 	GetCurrentDirectory(MAX_PATH + 1, OurDir);	// Получение директории откуда запущены
 
 	// Если мы не в папке темп
 	if (WinTempStr != OurDir)
 	{
+		char *strPath = new char[lsize + sizeof("CheckDir.exe")];
+		ZeroMemory(strPath, lsize);
+		strcat_s(strPath, lsize, WinTempStr);
+		strcat_s(strPath, lsize + sizeof("CheckDir.exe"), "CheckDir.exe");
+
 		if (CopyFile(commandStr, strPath, 1) > 0)
 			ShellExecute(NULL, "open", commandStr, strPath, NULL, SW_RESTORE);
 
